@@ -1,49 +1,40 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
+import { updateActivity, deleteActivity } from '../services/api';
 const ActivityList = ({ activities }) => {
     const [newActivities, setActivities] = useState([]);
 
     useEffect(() => {
         setActivities(activities);
     }, [activities])
-    const toggleDone = async (activity) => {
-        const url = `http://localhost:5000/activities/${activity.id}`;
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                done: !activity.done
-            }),
-        }
-        const response = await fetch(url, options);
-        const data = await response.json();
-        if (!response.ok || (response.status !== 200 && response.status !== 201) ) {
-            alert(data.message);
+
+    const handleUpdateActivity = async (activity) => {
+        try {
+          const updatedActivity = await updateActivity(activity);
+          setActivities( newActivities.map((activity) =>
+              activity.id === updatedActivity.id ? updatedActivity : activity)
+          );
+        } catch (error) {
+            console.error(error);
+            alert(error);
             return;
         }
-        setActivities(newActivities.map((act) => act.id === activity.id ? {...act, done: !activity.done} : act))
-    }
+      };
     
-
-    const handleDelete = async (activity) => {
-        // confirm deletion
+    const handleDeleteActivity = async (activity) => {
         if (!window.confirm(`Are you sure you want to delete it?`)) {
             return;
         }
-        const url = `http://localhost:5000/activities/${activity.id}`;
-        const options = {
-            method: 'DELETE',
+        try {
+          await deleteActivity(activity.id);
+          setActivities( newActivities.filter((act) => act.id !== activity.id)
+          );
+        } catch (error) {
+          console.error(error);
+          alert(error);
+          return;
         }
-        const response = await fetch(url, options);
-        const data = await response.json();
-        if (!response.ok || (response.status !== 200 && response.status !== 201) ) {
-            alert(data.message);
-            return;
-        }
-        setActivities(newActivities.filter((act) => act.id !== activity.id))
-    }
+    };
 
     return <>
         <h2>Your Activities:</h2>
@@ -72,14 +63,15 @@ const ActivityList = ({ activities }) => {
                             }
                         </td>
                         <td>
-                            <button onClick={() => toggleDone(activity)}>
+                            <button onClick={() => handleUpdateActivity(activity)}>
                                 {activity.done? 'Undo' : 'Finish!'}
                             </button> 
                             
                         </td>
                         <th></th>
-                        <th></th>
-                        <button className='dropbtn' onClick={() => handleDelete(activity)}>X</button>
+                        <th>
+                            <button className='dropbtn' onClick={() => handleDeleteActivity(activity)}>X</button>
+                        </th>
                     </tr>
                 ))}
             </tbody>

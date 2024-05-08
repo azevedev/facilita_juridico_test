@@ -1,6 +1,6 @@
 from config import db
 
-# Activity Model (id, name, done, link, price, participants, types)
+# Activity Model (id, name, done, link, price, participants, type)
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)

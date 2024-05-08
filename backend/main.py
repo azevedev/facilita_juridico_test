@@ -2,7 +2,9 @@ from flask import request, jsonify
 from config import app, db
 from flask_cors import cross_origin
 from models import Activity
-import requests
+from services import fetch_activities
+from dotenv import load_dotenv, dotenv_values
+load_dotenv()
 
 @app.route("/activities", methods=["GET"])
 @cross_origin()
@@ -18,20 +20,15 @@ def get_activities():
 @app.route("/activities", methods=["POST"])
 @cross_origin()
 def new_activity():
+    json = request.get_json()
     min_price = request.json.get('minPrice') or 0
     max_price = request.json.get('maxPrice') or 1
     participants = request.json.get('participants') or 1
     difficulty = request.json.get('difficulty') or 0
     type = request.json.get('type') or ''
-    # Good one: https://www.boredapi.com/api/activity/?key=1288934
     # Fetching data from API
-    response = requests.get("http://www.boredapi.com/api/activity?minprice=" 
-                            + str(min_price) + 
-                            "&maxprice=" + str(max_price)+ "&participants="
-                            + str(participants) + "&acessibility="
-                            + str(difficulty) + "&type="
-                            + str(type))
-    data = response.json()
+    data = fetch_activities(min_price, max_price, participants, difficulty, type)
+    
     if data.get("error") and data.get("error") == "No activity found with the specified parameters":
         return jsonify({"message": "Activity not found"}), 400
     

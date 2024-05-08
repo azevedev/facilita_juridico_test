@@ -2,6 +2,7 @@
 import './App.css'
 import { useState, useEffect } from 'react';
 import ActivityList from './ActivityList';
+import { getActivities, createNewActivity } from '../services/api';
 
 function App() {
   const [activities, setActivities] = useState([]);
@@ -14,41 +15,31 @@ function App() {
   const [difficulty, setDifficulty] = useState(0);
   const [diffBtn, setDiffBtn] = useState(-1);
   const [type, setType] = useState('');
-
-  const fetchActivities = async () => {
-    const response = await fetch('http://localhost:5000/activities');
-    const data = await response.json();
-    setActivities(data);
-  }
-
-  // fetching User on mount
+  
   useEffect(() => {
     fetchActivities();
-  }, [])
+  }, []);
+  
+  const fetchActivities = async () => {
+    const activitiesData = await getActivities();
+    setActivities(activitiesData);
+  };
 
-  const getNewActivity = async (e) => {
-    e.preventDefault();
-    const url = 'http://localhost:5000/activities';
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+  const generateNewActivity = async () => {
+    const params = {
         minPrice: minPrice,
         maxPrice: maxPrice,
         participants: participants,
         difficulty: difficulty,
         type: type
-      }),
-    }
-    const response = await fetch(url, options);
-    const data = await response.json();
-    if (!response.ok || (response.status !== 200 && response.status !== 201) ) {
-      alert(data.message);
+      };
+    
+    const response = await createNewActivity(params)
+    if (response.status !== 200 && response.status !== 201) {
+      alert(response.data.message);
       return;
     }
-    setActivities([...activities, data]);
+    setActivities([...activities, response.data]);
   }
 
   return (
@@ -140,11 +131,9 @@ function App() {
             <option value="music">Music</option>
             <option value="busywork">Busywork</option>
           </select>
-
       </h5>
       
-
-      <h3><button onClick={getNewActivity}>Get new activity</button></h3>
+      <h3><button onClick={generateNewActivity}>Get new activity</button></h3>
       <ActivityList activities={activities} />
     </>
   )
