@@ -1,0 +1,56 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+button {
+  margin: 2px 6px;
+}
+button.active{
+  border: 2px solid rgba(20, 139, 24, 0.884);
+  background-color: rgba(20, 139, 24, 0.884);
+  outline-color: black;
+  color: white;
+  outline-style: none;
+
+
+}
+table {
+  border-collapse: collapse;
+}
+
+.tr-activity {
+  position: relative;
+  height: 80px;
+  border-bottom: 1px solid white;
+}
+
+.dropbtn{
+  position: absolute;
+  top: 8px;
+  right: -16px;
+  font-size: 12px;
+  margin: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  padding: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: brown;
+  color: white;
+  border: none;
+}
