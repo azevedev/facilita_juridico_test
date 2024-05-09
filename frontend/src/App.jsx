@@ -39,7 +39,16 @@ function App() {
       alert(response.data.message);
       return;
     }
+    console.log("activities");
+    console.log(activities);
     setActivities([...activities, response.data]);
+  }
+
+  const handleOnChange = async(acts) => {
+        console.log("uptadind on main")
+        console.log(acts)
+        console.log(activities)
+        setActivities(acts)
   }
 
   return (
@@ -134,7 +143,7 @@ function App() {
       </h5>
       
       <h3><button onClick={generateNewActivity}>Get new activity</button></h3>
-      <ActivityList activities={activities} />
+      <ActivityList activities={activities} handleOnChange={handleOnChange} />
     </>
   )
 }

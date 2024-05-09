@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { updateActivity, deleteActivity } from '../services/api';
-const ActivityList = ({ activities }) => {
+const ActivityList = ({ activities, handleOnChange}) => {
     const [newActivities, setActivities] = useState([]);
 
     useEffect(() => {
@@ -11,9 +11,10 @@ const ActivityList = ({ activities }) => {
     const handleUpdateActivity = async (activity) => {
         try {
           const updatedActivity = await updateActivity(activity);
-          setActivities( newActivities.map((activity) =>
-              activity.id === updatedActivity.id ? updatedActivity : activity)
-          );
+          const savedActivities = newActivities.map((activity) =>
+            activity.id === updatedActivity.id ? updatedActivity : activity)
+          setActivities( savedActivities );
+          handleOnChange( savedActivities );
         } catch (error) {
             console.error(error);
             alert(error);
@@ -27,8 +28,11 @@ const ActivityList = ({ activities }) => {
         }
         try {
           await deleteActivity(activity.id);
-          setActivities( newActivities.filter((act) => act.id !== activity.id)
-          );
+          const updatedActivities = newActivities.filter((act) => act.id != activity.id)
+          setActivities( updatedActivities );
+          handleOnChange( updatedActivities );
+          console.log("newActivities");
+          console.log(newActivities);
         } catch (error) {
           console.error(error);
           alert(error);
@@ -38,6 +42,7 @@ const ActivityList = ({ activities }) => {
 
     return <>
         <h2>Your Activities:</h2>
+        { newActivities.length !== 0 ?
         <table>
             <thead>
                 <tr>
@@ -76,6 +81,8 @@ const ActivityList = ({ activities }) => {
                 ))}
             </tbody>
         </table>
+        : <div>No activities yet</div>
+        }
     </>;
 };
 

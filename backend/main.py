@@ -20,7 +20,6 @@ def get_activities():
 @app.route("/activities", methods=["POST"])
 @cross_origin()
 def new_activity():
-    json = request.get_json()
     min_price = request.json.get('minPrice') or 0
     max_price = request.json.get('maxPrice') or 1
     participants = request.json.get('participants') or 1
@@ -73,7 +72,7 @@ def update_activity(id):
 @app.route("/activities/<int:id>", methods=["DELETE"])
 @cross_origin()
 def delete_activity(id):
-    activity = Activity.query.get(id)
+    activity = db.session.get(Activity, id)
     if not activity:
         return jsonify({"message": "Activity not found"}), 404
 
