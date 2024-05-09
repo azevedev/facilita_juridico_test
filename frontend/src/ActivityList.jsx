@@ -31,8 +31,6 @@ const ActivityList = ({ activities, handleOnChange}) => {
           const updatedActivities = newActivities.filter((act) => act.id != activity.id)
           setActivities( updatedActivities );
           handleOnChange( updatedActivities );
-          console.log("newActivities");
-          console.log(newActivities);
         } catch (error) {
           console.error(error);
           alert(error);

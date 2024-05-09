@@ -39,15 +39,10 @@ function App() {
       alert(response.data.message);
       return;
     }
-    console.log("activities");
-    console.log(activities);
     setActivities([...activities, response.data]);
   }
 
   const handleOnChange = async(acts) => {
-        console.log("uptadind on main")
-        console.log(acts)
-        console.log(activities)
         setActivities(acts)
   }
 
